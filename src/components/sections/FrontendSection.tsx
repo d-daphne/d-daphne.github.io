@@ -12,7 +12,7 @@ function ImagePlaceholder({ tint, label }: { tint: string; label: string }) {
         background: `linear-gradient(135deg, color-mix(in oklab, ${tint} 70%, transparent), color-mix(in oklab, var(--blossom) 70%, transparent))`,
       }}
     >
-      <span className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+      <span className="text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground">
         {label}
       </span>
     </div>
@@ -30,21 +30,21 @@ function Bubble({
   index: number;
   isOpen: boolean;
 }) {
-  const diameter = `min(${project.size * 11}rem, ${project.size * 26}vh)`;
+  const diameter = `min(${project.size * 14}rem, ${project.size * 30}vh)`;
 
   return (
     <motion.button
       type="button"
       onClick={onOpen}
       layoutId={`bubble-${project.id}`}
-      className="absolute grid place-items-center rounded-full border border-border px-3 text-center cursor-pointer select-none"
+      className="absolute grid place-items-center rounded-full border border-border/80 px-4 text-center cursor-pointer select-none"
       style={{
         left: `${project.x}%`,
         top: `${project.y}%`,
         width: diameter,
         aspectRatio: '1',
         translate: '-50% -50%',
-        background: `radial-gradient(circle at 32% 28%, color-mix(in oklab, ${project.tint} 90%, white), color-mix(in oklab, ${project.tint} 55%, transparent))`,
+        background: `radial-gradient(circle at 32% 28%, color-mix(in oklab, ${project.tint} 92%, white), color-mix(in oklab, ${project.tint} 60%, transparent))`,
         boxShadow: 'var(--shadow-bubble)',
         opacity: isOpen ? 0 : 1,
         pointerEvents: isOpen ? 'none' : 'auto',
@@ -53,9 +53,9 @@ function Bubble({
       whileHover={{ scale: 1.12, rotate: index % 2 ? 3 : -3 }}
       whileTap={{ scale: 0.95 }}
     >
-      {/* Inner floating container for y keyframes so layoutId does NOT get trapped in repeat: Infinity */}
+      {/* Inner floating container for y keyframes */}
       <motion.span 
-        className="pointer-events-none flex flex-col items-center justify-center p-2"
+        className="pointer-events-none flex flex-col items-center justify-center p-3"
         animate={{ y: [0, -10, 0] }}
         transition={{
           duration: 5 + index * 0.7,
@@ -64,10 +64,10 @@ function Bubble({
           delay: index * 0.4,
         }}
       >
-        <span className="block text-[clamp(0.7rem,1.4vw,1.05rem)] font-extrabold leading-tight text-[#45324d]">
+        <span className="block text-[clamp(0.9rem,1.8vw,1.35rem)] font-extrabold leading-tight text-[#45324d]">
           {project.name}
         </span>
-        <span className="mt-0.5 block text-[clamp(0.55rem,0.85vw,0.72rem)] font-bold text-muted-foreground">
+        <span className="mt-1 block text-[clamp(0.65rem,1.1vw,0.85rem)] font-extrabold text-muted-foreground">
           {project.stack[0]}
         </span>
       </motion.span>
@@ -91,7 +91,7 @@ export function FrontendSection() {
   };
 
   return (
-    <SectionShell kicker="Things I've built" title="Frontend">
+    <SectionShell kicker="Things I've built" title="Frontend & Engineering" boxed={false}>
       <div
         className="relative h-full w-full overflow-hidden"
         onClick={(e) => {
@@ -113,9 +113,9 @@ export function FrontendSection() {
             <motion.div
               key={active.id}
               layoutId={`bubble-${active.id}`}
-              className="absolute left-1/2 top-1/2 z-30 w-[min(92%,46rem)] max-h-[85vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[2.25rem] border border-border p-6 sm:p-7 shadow-2xl"
+              className="absolute left-1/2 top-1/2 z-30 w-[min(94%,52rem)] max-h-[85vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[2.5rem] border border-border p-7 sm:p-9 shadow-2xl backdrop-blur-xl"
               style={{
-                background: `linear-gradient(150deg, color-mix(in oklab, ${active.tint} 55%, var(--background)), var(--background))`,
+                background: `linear-gradient(150deg, color-mix(in oklab, ${active.tint} 65%, var(--background)), var(--background))`,
                 boxShadow: 'var(--shadow-soft)',
               }}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -127,47 +127,47 @@ export function FrontendSection() {
                 type="button"
                 onClick={handleClose}
                 aria-label="Close project"
-                className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-border bg-card text-[#45324d] transition-transform hover:rotate-90 hover:scale-110 shadow-xs cursor-pointer z-10"
+                className="absolute right-5 top-5 grid size-10 place-items-center rounded-full border border-border bg-card text-[#45324d] transition-transform hover:rotate-90 hover:scale-110 shadow-sm cursor-pointer z-10"
               >
-                <X className="size-4" />
+                <X className="size-5" />
               </button>
 
-              <div className="grid gap-5 sm:grid-cols-[1.1fr_1fr]">
+              <div className="grid gap-6 sm:grid-cols-[1.15fr_1fr]">
                 <div className="min-w-0 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-2xl font-extrabold sm:text-3xl text-[#45324d]">{active.name}</h3>
-                    <p className="mt-1 text-sm font-semibold text-muted-foreground">
+                    <h3 className="text-3xl font-extrabold sm:text-4xl text-[#45324d]">{active.name}</h3>
+                    <p className="mt-1.5 text-base font-bold text-muted-foreground">
                       {active.tagline}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-1.5">
+                    <div className="mt-4 flex flex-wrap gap-2">
                       {active.stack.map((s) => (
                         <span
                           key={s}
-                          className="rounded-full bg-card px-2.5 py-1 text-xs font-bold text-[#45324d] border border-white/60 shadow-2xs"
+                          className="rounded-full bg-card px-3.5 py-1.5 text-xs font-bold text-[#45324d] border border-white/60 shadow-xs"
                         >
                           {s}
                         </span>
                       ))}
                     </div>
-                    <ul className="mt-4 space-y-2 text-xs sm:text-sm leading-relaxed text-slate-700 font-medium">
+                    <ul className="mt-5 space-y-2.5 text-sm sm:text-base leading-relaxed text-slate-700 font-medium">
                       {active.details.map((d) => (
-                        <li key={d} className="flex gap-2">
-                          <span aria-hidden className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
+                        <li key={d} className="flex gap-2.5">
+                          <span aria-hidden className="mt-2 size-2 shrink-0 rounded-full bg-primary" />
                           <span>{d}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="mt-5 flex flex-wrap items-center gap-2 pt-3 border-t border-border">
+                  <div className="mt-6 flex flex-wrap items-center gap-3 pt-4 border-t border-border">
                     {active.githubUrl && (
                       <a
                         href={active.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full bg-[#45324d] px-4 py-2 text-xs font-extrabold text-white transition-transform hover:scale-105"
+                        className="inline-flex items-center gap-2 rounded-full bg-[#45324d] px-5 py-2.5 text-sm font-extrabold text-white transition-transform hover:scale-105 shadow-md"
                       >
-                        <Github className="size-3.5" /> Repository
+                        <Github className="size-4" /> Repository
                       </a>
                     )}
                     {active.demoUrl && (
@@ -175,17 +175,17 @@ export function FrontendSection() {
                         href={active.demoUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-extrabold text-[#45324d] transition-transform hover:scale-105"
+                        className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-extrabold text-[#45324d] transition-transform hover:scale-105 shadow-sm"
                       >
-                        <ExternalLink className="size-3.5 text-[#ab93db]" /> Demo Link
+                        <ExternalLink className="size-4 text-[#ab93db]" /> Live Demo
                       </a>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {active.images && active.images.length > 0 ? (
-                    <div className="relative aspect-[16/10] w-full rounded-2xl border border-border overflow-hidden bg-slate-100 shadow-sm group">
+                    <div className="relative aspect-[16/10] w-full rounded-3xl border border-border overflow-hidden bg-slate-100 shadow-md group">
                       <img
                         src={active.images[activeImageIndex].startsWith("http") ? active.images[activeImageIndex] : `${import.meta.env.BASE_URL}${active.images[activeImageIndex].replace(/^\.?\//, "")}`}
                         alt={`${active.name} preview`}
@@ -199,9 +199,9 @@ export function FrontendSection() {
                                 prev === 0 ? active.images.length - 1 : prev - 1
                               )
                             }
-                            className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center shadow backdrop-blur transition-all"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center shadow backdrop-blur transition-all"
                           >
-                            <ChevronLeft className="w-4 h-4" />
+                            <ChevronLeft className="w-5 h-5" />
                           </button>
                           <button
                             onClick={() =>
@@ -209,18 +209,18 @@ export function FrontendSection() {
                                 prev === active.images.length - 1 ? 0 : prev + 1
                               )
                             }
-                            className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center shadow backdrop-blur transition-all"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center shadow backdrop-blur transition-all"
                           >
-                            <ChevronRight className="w-4 h-4" />
+                            <ChevronRight className="w-5 h-5" />
                           </button>
                         </>
                       )}
                     </div>
                   ) : (
-                    <ImagePlaceholder tint={active.tint} label={`${active.name} Overview`} />
+                    <ImagePlaceholder tint={active.tint} label={`${active.name} Architecture`} />
                   )}
 
-                  <ImagePlaceholder tint="var(--periwinkle)" label="Detail View" />
+                  <ImagePlaceholder tint="var(--periwinkle)" label="System Workflow & Models" />
                 </div>
               </div>
             </motion.div>

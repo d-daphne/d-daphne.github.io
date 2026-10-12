@@ -172,3 +172,27 @@
   opacity: 0.75;
   animation: hue-drift 18s ease-in-out infinite;
 }
+
+@media print {
+  body {
+    overflow: visible !important;
+    background: white !important;
+    color: #111 !important;
+  }
+  .no-print,
+  button,
+  .hue-blob {
+    display: none !important;
+  }
+  #printable-resume {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: white !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+}

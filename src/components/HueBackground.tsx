@@ -5,6 +5,7 @@ const PALETTES = {
   education: ["var(--lilac)", "var(--periwinkle)", "var(--orchid)", "var(--blossom)"],
   frontend: ["var(--petal)", "var(--orchid)", "var(--blossom)", "var(--periwinkle)"],
   data: ["var(--iris)", "var(--periwinkle)", "var(--lilac)", "var(--petal)"],
+  resume: ["var(--orchid)", "var(--periwinkle)", "var(--blossom)", "var(--iris)"],
 } as const;
 
 type PaletteKey = keyof typeof PALETTES;
