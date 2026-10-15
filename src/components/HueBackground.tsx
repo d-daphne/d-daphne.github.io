@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { memo } from "react";
 
 const PALETTES = {
   intro: ["var(--periwinkle)", "var(--blossom)", "var(--petal)", "var(--lilac)"],
@@ -17,14 +17,18 @@ const BLOBS = [
   { size: 34, x: "4%", y: "62%", delay: 7.5 },
 ] as const;
 
-export function HueBackground({ section }: { section: string }) {
+export const HueBackground = memo(function HueBackground({ section }: { section: string }) {
   const key = (section in PALETTES ? section : "intro") as PaletteKey;
   const colors = PALETTES[key];
 
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+      style={{ contain: "strict", transform: "translateZ(0)" }}
+    >
       {BLOBS.map((blob, i) => (
-        <motion.div
+        <div
           key={i}
           className="hue-blob"
           style={{
@@ -33,20 +37,18 @@ export function HueBackground({ section }: { section: string }) {
             left: blob.x,
             top: blob.y,
             animationDelay: `${blob.delay}s`,
+            background: `radial-gradient(circle, ${colors[i % colors.length]} 0%, transparent 68%)`,
           }}
-          animate={{ backgroundColor: colors[i % colors.length] as string }}
-          transition={{ duration: 1.4, ease: "easeInOut" }}
         />
       ))}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 opacity-40 pointer-events-none"
         style={{
           backgroundImage:
             "radial-gradient(color-mix(in oklab, var(--iris) 18%, transparent) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
-          maskImage: "radial-gradient(circle at 50% 45%, black 30%, transparent 78%)",
         }}
       />
     </div>
   );
-}
+});

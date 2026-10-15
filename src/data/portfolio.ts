@@ -25,12 +25,12 @@ export const frontendProjects: Project[] = [
       "Real-time Chase 5/24 rule calculations, drop date projections, and upcoming fee alert notifications."
     ],
     size: 1.15,
-    x: 48,
-    y: 38,
+    x: 50,
+    y: 46,
     tint: "var(--periwinkle)",
     images: [
-      "/Websites/SwiftCred_dark.png",
-      "/Websites/SwiftCred_light.png"
+      "/Websites/SwiftCred_dark.webp",
+      "/Websites/SwiftCred_light.webp"
     ],
     githubUrl: "https://github.com/d-daphne/swiftcred"
   },
@@ -44,12 +44,12 @@ export const frontendProjects: Project[] = [
       "Server-rendered JSP views styled with a custom responsive Tailwind CSS design system.",
       "Team profile cards highlighting role allocation (Mastermind & Driver) and project submission metadata."
     ],
-    size: 1.08,
-    x: 18,
-    y: 28,
+    size: 1.0,
+    x: 20,
+    y: 32,
     tint: "var(--petal)",
     images: [
-      "/Websites/DDPG Programming Club.png"
+      "/Websites/DDPG Programming Club.webp"
     ],
     githubUrl: "https://github.com/d-daphne/ddpg-club"
   },
@@ -63,9 +63,9 @@ export const frontendProjects: Project[] = [
       "Automates SQL query generation, cutting manual script writing effort by 65% for the analytics team.",
       "Enforces data governance and standardizes joins across AWS QuickSight & SQL backends."
     ],
-    size: 0.88,
-    x: 76,
-    y: 28,
+    size: 0.9,
+    x: 80,
+    y: 32,
     tint: "var(--orchid)",
     githubUrl: "https://github.com/d-daphne"
   },
@@ -79,9 +79,9 @@ export const frontendProjects: Project[] = [
       "Optimized SQL extraction queries reducing refresh latency and maintaining enterprise gateway health.",
       "Surfaced critical service patterns for senior leadership and Project Managers."
     ],
-    size: 0.82,
-    x: 28,
-    y: 72,
+    size: 0.85,
+    x: 24,
+    y: 65,
     tint: "var(--lilac)",
     githubUrl: "https://github.com/d-daphne"
   },
@@ -95,9 +95,9 @@ export const frontendProjects: Project[] = [
       "Authored complex SQL validation scripts comparing cross-platform metric outputs.",
       "Visualized learner engagement, assessment scores, and tool adoption metrics."
     ],
-    size: 0.78,
-    x: 72,
-    y: 72,
+    size: 0.85,
+    x: 76,
+    y: 65,
     tint: "var(--blossom)",
     githubUrl: "https://github.com/d-daphne"
   }
