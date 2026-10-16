@@ -136,10 +136,10 @@
 }
 
 @utility glass-panel {
-  background: color-mix(in oklab, var(--background) 62%, transparent);
-  backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid color-mix(in oklab, var(--iris) 22%, transparent);
+  background: color-mix(in oklab, var(--card) 90%, white);
+  border: 1px solid color-mix(in oklab, var(--iris) 24%, transparent);
   box-shadow: var(--shadow-soft);
+  transform: translateZ(0);
 }
 
 @utility text-gradient {
@@ -158,7 +158,7 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(4%, -5%, 0) scale(1.18);
+    transform: translate3d(3%, -4%, 0) scale(1.08);
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -167,10 +167,80 @@
 
 @utility hue-blob {
   position: absolute;
-  border-radius: 999px;
-  filter: blur(70px);
+  border-radius: 9999px;
   opacity: 0.75;
-  animation: hue-drift 18s ease-in-out infinite;
+  animation: hue-drift 22s ease-in-out infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.8s ease;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes float-orbit-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(4px, -7px, 0) rotate(1deg);
+  }
+  66% {
+    transform: translate3d(-3px, -3px, 0) rotate(-1deg);
+  }
+}
+
+@keyframes float-orbit-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(-5px, -5px, 0) rotate(-1.5deg);
+  }
+  66% {
+    transform: translate3d(4px, -8px, 0) rotate(1deg);
+  }
+}
+
+@keyframes float-orbit-3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(3px, -8px, 0) rotate(1.2deg);
+  }
+  66% {
+    transform: translate3d(-4px, -4px, 0) rotate(-1.2deg);
+  }
+}
+
+.bubble-float-1 {
+  animation: float-orbit-1 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+.bubble-float-2 {
+  animation: float-orbit-2 8.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.bubble-float-3 {
+  animation: float-orbit-3 7.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.bubble-float {
+  animation: float-orbit-1 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hue-blob,
+  .bubble-float,
+  .bubble-float-1,
+  .bubble-float-2,
+  .bubble-float-3 {
+    animation: none !important;
+  }
 }
 
 @media print {

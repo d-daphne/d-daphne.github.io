@@ -11,9 +11,9 @@ export const ResumeSection: React.FC = () => {
 
   return (
     <SectionShell kicker="Curriculum Vitae" title="Resume">
-      <div id="printable-resume" className="flex h-full flex-col gap-4 overflow-y-auto pr-1">
+      <div id="printable-resume" className="flex h-full flex-col gap-4 overflow-y-auto pr-1 scroll-smooth">
         {/* Top Header & Print Action Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 rounded-[1.75rem] border border-border bg-card/90 shadow-xs backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 rounded-[1.75rem] border border-border bg-card/95 shadow-xs">
           <div>
             <h3 className="text-xl sm:text-2xl font-extrabold text-[#45324d] flex items-center gap-2">
               <span>{contact.name}</span>
@@ -57,7 +57,7 @@ export const ResumeSection: React.FC = () => {
         </div>
 
         {/* Executive Summary */}
-        <div className="p-4 sm:p-5 rounded-[1.75rem] border border-border bg-muted/40 backdrop-blur-md">
+        <div className="p-4 sm:p-5 rounded-[1.75rem] border border-border bg-muted/60">
           <p className="text-xs sm:text-sm font-semibold text-slate-700 leading-relaxed">
             {contact.summary}
           </p>
@@ -77,8 +77,8 @@ export const ResumeSection: React.FC = () => {
                 key={exp.id}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 * (i + 1) }}
-                className="rounded-[1.75rem] border border-border bg-card/90 p-4 sm:p-5 shadow-2xs backdrop-blur-md"
+                transition={{ delay: 0.04 * (i + 1), duration: 0.25 }}
+                className="rounded-[1.75rem] border border-border bg-card/95 p-4 sm:p-5 shadow-2xs"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <h4 className="text-base sm:text-lg font-extrabold text-[#45324d]">{exp.role}</h4>
@@ -118,9 +118,9 @@ export const ResumeSection: React.FC = () => {
                 {certifications.map((c, idx) => (
                   <div
                     key={c.code}
-                    className="rounded-2xl border border-border p-3 shadow-2xs backdrop-blur-md"
+                    className="rounded-2xl border border-border p-3 shadow-2xs"
                     style={{
-                      background: `color-mix(in oklab, var(--${["lilac", "blossom", "petal", "orchid"][idx % 4]}) 50%, transparent)`,
+                      background: `color-mix(in oklab, var(--${["lilac", "blossom", "petal", "orchid"][idx % 4]}) 50%, white)`,
                     }}
                   >
                     <p className="text-sm font-extrabold text-[#45324d]">{c.code}</p>

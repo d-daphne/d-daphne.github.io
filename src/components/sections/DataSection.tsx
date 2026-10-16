@@ -41,7 +41,7 @@ export function DataSection() {
           </span>
           <button
             onClick={() => setShowSqlPlayground(!showSqlPlayground)}
-            className="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold border border-border bg-card/90 hover:bg-white text-[#45324d] flex items-center space-x-2 shadow-xs transition-all hover:scale-105 cursor-pointer backdrop-blur"
+            className="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold border border-border bg-card hover:bg-white text-[#45324d] flex items-center space-x-2 shadow-xs transition-all hover:scale-105 cursor-pointer"
           >
             {showSqlPlayground ? (
               <>
@@ -58,17 +58,17 @@ export function DataSection() {
         </div>
 
         {!showSqlPlayground ? (
-          <div className="grid h-full gap-6 overflow-y-auto pr-1 md:grid-cols-2">
+          <div className="grid h-full gap-6 overflow-y-auto pr-1 md:grid-cols-2 scroll-smooth">
             {dataRoles.map((role, i) => (
               <motion.article
                 key={role.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -4 }}
-                className="flex flex-col rounded-[2.25rem] border border-border p-6 sm:p-8 overflow-y-auto shadow-md backdrop-blur-md"
+                transition={{ delay: i * 0.08, duration: 0.25 }}
+                whileHover={{ y: -3 }}
+                className="flex flex-col rounded-[2.25rem] border border-border p-6 sm:p-8 overflow-y-auto shadow-md bg-card/95"
                 style={{
-                  background: `linear-gradient(160deg, color-mix(in oklab, ${TINTS[i % TINTS.length]} 48%, transparent), color-mix(in oklab, var(--background) 90%, transparent))`,
+                  background: `linear-gradient(160deg, color-mix(in oklab, ${TINTS[i % TINTS.length]} 48%, white), color-mix(in oklab, var(--card) 95%, white))`,
                 }}
               >
                 <p className="text-xs sm:text-sm font-extrabold uppercase tracking-[0.26em] text-muted-foreground">
@@ -99,7 +99,7 @@ export function DataSection() {
             ))}
           </div>
         ) : (
-          <div className="h-full overflow-y-auto rounded-[2.25rem] border border-border p-6 sm:p-8 bg-card/90 shadow-md space-y-5 backdrop-blur-md">
+          <div data-no-drag className="h-full overflow-y-auto rounded-[2.25rem] border border-border p-6 sm:p-8 bg-card/95 shadow-md space-y-5 scroll-smooth">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-2xl font-extrabold text-[#45324d] flex items-center gap-2">

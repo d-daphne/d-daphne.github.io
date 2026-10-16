@@ -39,9 +39,6 @@ const NEIGHBOURS: Record<SectionId, Partial<Record<Dir, SectionId>>> = {
 export default function App() {
   const [section, setSection] = useState<SectionId>("intro");
 
-  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
-  const pointerStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-
   const go = useCallback(
     (direction: Dir) => {
       const next = NEIGHBOURS[section][direction];
@@ -74,11 +71,17 @@ export default function App() {
   }, [go]);
 
   // Touch swipe handling for mobile / tablets
+  const touchStartRef = useRef<{ x: number; y: number; inScrollable: boolean } | null>(null);
+  const pointerStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 1) {
+      const target = e.target as HTMLElement;
+      const inScrollable = !!target.closest(".overflow-y-auto, [data-scrollable]");
       touchStartRef.current = {
         x: e.touches[0].clientX,
         y: e.touches[0].clientY,
+        inScrollable,
       };
     }
   };
@@ -87,9 +90,17 @@ export default function App() {
     if (!touchStartRef.current || e.changedTouches.length === 0) return;
     const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
     const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+    const inScrollable = touchStartRef.current.inScrollable;
     touchStartRef.current = null;
 
     const threshold = 45;
+    if (inScrollable) {
+      if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+        go(dx > 0 ? "left" : "right");
+      }
+      return;
+    }
+
     if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
       if (Math.abs(dx) >= Math.abs(dy)) {
         go(dx > 0 ? "left" : "right");
@@ -107,6 +118,7 @@ export default function App() {
       target.closest("a") ||
       target.closest("input") ||
       target.closest("textarea") ||
+      target.closest(".overflow-y-auto") ||
       target.closest("[data-no-drag]")
     ) {
       return;
@@ -135,25 +147,25 @@ export default function App() {
     }
   };
 
-  // Calculate 2D Transform Translate relative to Center Intro Canvas
+  // Calculate 3D hardware-accelerated translate relative to Center Intro Canvas
   const getTransform = () => {
     switch (section) {
       case "intro":
-        return "translate(0%, 0%)";
+        return "translate3d(0%, 0%, 0)";
       case "resume":
-        return "translate(0%, 100vh)";
+        return "translate3d(0%, 100vh, 0)";
       case "education":
-        return "translate(100vw, 0%)";
+        return "translate3d(100vw, 0%, 0)";
       case "frontend":
-        return "translate(-100vw, 0%)";
+        return "translate3d(-100vw, 0%, 0)";
       case "data":
-        return "translate(0%, -100vh)";
+        return "translate3d(0%, -100vh, 0)";
     }
   };
 
   return (
     <main
-      className="relative h-screen w-screen overflow-hidden select-none bg-[#faf8fd] touch-none"
+      className="relative h-screen w-screen overflow-hidden select-none bg-[#faf8fd]"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onPointerDown={handlePointerDown}
@@ -162,43 +174,75 @@ export default function App() {
       {/* Hue Background Blob Animation */}
       <HueBackground section={section} />
 
-      {/* 2D Spatial Container Grid with smooth canvas sliding transition */}
+      {/* 2D Spatial Container Grid with snappy GPU hardware translation */}
       <div
-        className="w-full h-full transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) ease-out z-10 relative cursor-default"
+        className="w-full h-full z-10 relative cursor-default"
         style={{
           transform: getTransform(),
+          transition: "transform 400ms cubic-bezier(0.2, 0.9, 0.25, 1)",
+          willChange: "transform",
         }}
       >
         {/* TOP PANEL: RESUME (-100vh offset relative to center) */}
-        <div className="absolute -top-[100vh] left-0 w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden">
+        <div
+          aria-hidden={section !== "resume"}
+          style={{ transform: "translateZ(0)" }}
+          className={`absolute -top-[100vh] left-0 w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden ${
+            section === "resume" ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
           <div className="w-full h-full max-w-6xl lg:max-w-7xl max-h-[88vh]">
             <ResumeSection />
           </div>
         </div>
 
         {/* CENTER PANEL: INTRO */}
-        <div className="absolute inset-0 w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden">
+        <div
+          aria-hidden={section !== "intro"}
+          style={{ transform: "translateZ(0)" }}
+          className={`absolute inset-0 w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden ${
+            section === "intro" ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
           <div className="w-full h-full max-w-6xl lg:max-w-7xl max-h-[88vh]">
             <IntroSection onOpenResume={() => setSection("resume")} />
           </div>
         </div>
 
         {/* LEFT PANEL: EDUCATION (-100vw offset relative to center) */}
-        <div className="absolute top-0 -left-[100vw] w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden">
+        <div
+          aria-hidden={section !== "education"}
+          style={{ transform: "translateZ(0)" }}
+          className={`absolute top-0 -left-[100vw] w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden ${
+            section === "education" ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
           <div className="w-full h-full max-w-6xl lg:max-w-7xl max-h-[88vh]">
             <EducationSection />
           </div>
         </div>
 
         {/* RIGHT PANEL: FRONTEND (+100vw offset relative to center) */}
-        <div className="absolute top-0 left-[100vw] w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden">
+        <div
+          aria-hidden={section !== "frontend"}
+          style={{ transform: "translateZ(0)" }}
+          className={`absolute top-0 left-[100vw] w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden ${
+            section === "frontend" ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
           <div className="w-full h-full max-w-6xl lg:max-w-7xl max-h-[88vh]">
             <FrontendSection />
           </div>
         </div>
 
         {/* BOTTOM PANEL: DATA (+100vh offset relative to center) */}
-        <div className="absolute top-[100vh] left-0 w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden">
+        <div
+          aria-hidden={section !== "data"}
+          style={{ transform: "translateZ(0)" }}
+          className={`absolute top-[100vh] left-0 w-full h-full flex items-center justify-center p-3 sm:p-6 md:p-10 overflow-hidden ${
+            section === "data" ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
           <div className="w-full h-full max-w-6xl lg:max-w-7xl max-h-[88vh]">
             <DataSection />
           </div>
@@ -233,7 +277,7 @@ export default function App() {
             type="button"
             onClick={() => go(d)}
             aria-label={`Go to ${LABELS[target]}`}
-            className={`absolute z-30 flex items-center gap-2 rounded-full border border-border bg-card/90 px-3.5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-[#45324d] backdrop-blur transition-all hover:bg-card hover:shadow-[var(--shadow-bubble)] hover:scale-105 cursor-pointer ${pos} no-print`}
+            className={`absolute z-30 flex items-center gap-2 rounded-full border border-border bg-card/95 px-3.5 py-3 text-xs font-bold uppercase tracking-[0.22em] text-[#45324d] shadow-sm transition-all hover:bg-card hover:shadow-[var(--shadow-bubble)] hover:scale-105 cursor-pointer ${pos} no-print`}
           >
             <Icon className="size-4 shrink-0 text-[#ab93db]" />
             <span style={vertical ? { writingMode: "vertical-rl" } : undefined}>
@@ -244,7 +288,7 @@ export default function App() {
       })}
 
       {/* Bottom-Left Spatial Map Radar Navigation */}
-      <div className="fixed bottom-4 left-4 z-40 hidden lg:flex items-center bg-card/90 border border-border p-2 rounded-[1.5rem] backdrop-blur shadow-xl no-print">
+      <div className="fixed bottom-4 left-4 z-40 hidden lg:flex items-center bg-card/95 border border-border p-2 rounded-[1.5rem] shadow-xl no-print">
         <div className="relative w-28 h-24 bg-muted/60 rounded-2xl border border-border p-1">
           {/* Resume Box (Top Center) */}
           <button

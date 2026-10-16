@@ -8,13 +8,14 @@ export function EducationSection() {
 
   return (
     <SectionShell kicker="Where it started" title="Education">
-      <div className="flex h-full flex-col gap-3.5 overflow-y-auto pr-1">
+      <div className="flex h-full flex-col gap-3.5 overflow-y-auto pr-1 scroll-smooth">
         {featured ? (
           <motion.article
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-[1.75rem] border border-border p-4 sm:p-5 shadow-xs backdrop-blur-md"
-            style={{ background: "color-mix(in oklab, var(--periwinkle) 45%, transparent)" }}
+            transition={{ duration: 0.25 }}
+            className="rounded-[1.75rem] border border-border p-4 sm:p-5 shadow-xs"
+            style={{ background: "color-mix(in oklab, var(--periwinkle) 45%, white)" }}
           >
             <div className="flex items-start gap-3.5">
               <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-card shadow-xs">
@@ -40,8 +41,8 @@ export function EducationSection() {
             key={item.school}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08 * (i + 1) }}
-            className="rounded-[1.5rem] border border-border bg-card/90 p-3.5 sm:p-4 shadow-2xs backdrop-blur-md"
+            transition={{ delay: 0.05 * (i + 1), duration: 0.25 }}
+            className="rounded-[1.5rem] border border-border bg-card/95 p-3.5 sm:p-4 shadow-2xs"
           >
             <h3 className="text-base sm:text-lg font-extrabold text-[#45324d]">{item.program}</h3>
             <p className="mt-0.5 text-xs sm:text-sm font-bold text-muted-foreground">
@@ -63,11 +64,11 @@ export function EducationSection() {
                 key={c.code}
                 initial={{ opacity: 0, scale: 0.94 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.08 + i * 0.04 }}
-                whileHover={{ y: -2, rotate: i % 2 ? 1.5 : -1.5 }}
-                className="rounded-2xl border border-border p-3 shadow-2xs backdrop-blur-md"
+                transition={{ delay: 0.05 + i * 0.03, duration: 0.2 }}
+                whileHover={{ y: -2 }}
+                className="rounded-2xl border border-border p-3 shadow-2xs"
                 style={{
-                  background: `color-mix(in oklab, var(--${["lilac", "blossom", "petal", "orchid"][i % 4]}) 50%, transparent)`,
+                  background: `color-mix(in oklab, var(--${["lilac", "blossom", "petal", "orchid"][i % 4]}) 50%, white)`,
                 }}
               >
                 <p className="text-base font-extrabold text-[#45324d]">{c.code}</p>
@@ -86,7 +87,7 @@ export function EducationSection() {
           </p>
           <div className="grid gap-2.5 sm:grid-cols-2">
             {skillGroups.map((group) => (
-              <div key={group.title} className="rounded-2xl border border-border bg-card/90 p-3 shadow-2xs backdrop-blur-md">
+              <div key={group.title} className="rounded-2xl border border-border bg-card/95 p-3 shadow-2xs">
                 <p className="text-xs font-extrabold text-[#45324d]">{group.title}</p>
                 <div className="mt-1.5 flex flex-wrap gap-1">
                   {group.items.map((item) => (

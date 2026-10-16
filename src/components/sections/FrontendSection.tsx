@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, ExternalLink, Github, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SectionShell } from '@/components/SectionShell';
@@ -30,54 +30,72 @@ function Bubble({
   index: number;
   isOpen: boolean;
 }) {
-  const diameter = `min(${project.size * 14}rem, ${project.size * 30}vh)`;
+  const diameter = `clamp(${project.size * 135}px, ${project.size * 15}vw, ${project.size * 190}px)`;
+  const floatClass = `bubble-float-${(index % 3) + 1}`;
 
   return (
-    <motion.button
-      type="button"
-      onClick={onOpen}
-      layoutId={`bubble-${project.id}`}
-      className="absolute grid place-items-center rounded-full border border-border/80 px-4 text-center cursor-pointer select-none"
+    <div
+      className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
       style={{
         left: `${project.x}%`,
         top: `${project.y}%`,
-        width: diameter,
-        aspectRatio: '1',
-        translate: '-50% -50%',
-        background: `radial-gradient(circle at 32% 28%, color-mix(in oklab, ${project.tint} 92%, white), color-mix(in oklab, ${project.tint} 60%, transparent))`,
-        boxShadow: 'var(--shadow-bubble)',
-        opacity: isOpen ? 0 : 1,
-        pointerEvents: isOpen ? 'none' : 'auto',
+        zIndex: isOpen ? 0 : 10,
       }}
-      transition={{ type: 'spring', stiffness: 280, damping: 24 }}
-      whileHover={{ scale: 1.12, rotate: index % 2 ? 3 : -3 }}
-      whileTap={{ scale: 0.95 }}
     >
-      {/* Inner floating container for y keyframes */}
-      <motion.span 
-        className="pointer-events-none flex flex-col items-center justify-center p-3"
-        animate={{ y: [0, -10, 0] }}
-        transition={{
-          duration: 5 + index * 0.7,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: index * 0.4,
+      <motion.button
+        type="button"
+        onClick={onOpen}
+        className="pointer-events-auto relative grid place-items-center rounded-full border border-border/80 text-center cursor-pointer select-none transition-shadow duration-300 hover:shadow-xl group"
+        style={{
+          width: diameter,
+          height: diameter,
+          background: `radial-gradient(circle at 35% 30%, color-mix(in oklab, ${project.tint} 94%, white), color-mix(in oklab, ${project.tint} 65%, transparent))`,
+          boxShadow: 'var(--shadow-bubble)',
+          opacity: isOpen ? 0 : 1,
         }}
+        whileHover={{ scale: 1.07 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: 'spring', stiffness: 380, damping: 26 }}
       >
-        <span className="block text-[clamp(0.9rem,1.8vw,1.35rem)] font-extrabold leading-tight text-[#45324d]">
-          {project.name}
+        {/* Inner floating container for organic multi-axis keyframes */}
+        <span 
+          className={`pointer-events-none flex flex-col items-center justify-center p-3 sm:p-4 ${floatClass}`}
+          style={{
+            animationDuration: `${6.5 + index * 0.8}s`,
+            animationDelay: `${index * 0.45}s`,
+          }}
+        >
+          <span className="block text-[clamp(0.85rem,1.3vw,1.25rem)] font-extrabold leading-tight text-[#45324d] group-hover:text-primary transition-colors">
+            {project.name}
+          </span>
+          <span className="mt-1 block text-[clamp(0.65rem,0.9vw,0.8rem)] font-extrabold text-muted-foreground">
+            {project.stack[0]}
+          </span>
+          <span className="mt-1 text-[10px] font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+            View &rarr;
+          </span>
         </span>
-        <span className="mt-1 block text-[clamp(0.65rem,1.1vw,0.85rem)] font-extrabold text-muted-foreground">
-          {project.stack[0]}
-        </span>
-      </motion.span>
-    </motion.button>
+      </motion.button>
+    </div>
   );
 }
 
 export function FrontendSection() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
+
+  // Preload all project images immediately into browser cache
+  useEffect(() => {
+    frontendProjects.forEach((p) => {
+      p.images?.forEach((src) => {
+        const fullSrc = src.startsWith("http")
+          ? src
+          : `${import.meta.env.BASE_URL}${src.replace(/^\.?\//, "")}`;
+        const img = new Image();
+        img.src = fullSrc;
+      });
+    });
+  }, []);
 
   const active = frontendProjects.find((p) => p.id === openId) ?? null;
 
@@ -93,11 +111,54 @@ export function FrontendSection() {
   return (
     <SectionShell kicker="Things I've built" title="Frontend & Engineering" boxed={false}>
       <div
-        className="relative h-full w-full overflow-hidden"
+        className="relative h-full w-full"
         onClick={(e) => {
           if (e.target === e.currentTarget) handleClose();
         }}
       >
+        {/* Constellation Orbit Connection Lines */}
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        >
+          <line
+            x1="50%"
+            y1="46%"
+            x2="20%"
+            y2="32%"
+            stroke="color-mix(in oklab, var(--iris) 18%, transparent)"
+            strokeWidth="1.5"
+            strokeDasharray="4 6"
+          />
+          <line
+            x1="50%"
+            y1="46%"
+            x2="80%"
+            y2="32%"
+            stroke="color-mix(in oklab, var(--iris) 18%, transparent)"
+            strokeWidth="1.5"
+            strokeDasharray="4 6"
+          />
+          <line
+            x1="50%"
+            y1="46%"
+            x2="24%"
+            y2="65%"
+            stroke="color-mix(in oklab, var(--iris) 18%, transparent)"
+            strokeWidth="1.5"
+            strokeDasharray="4 6"
+          />
+          <line
+            x1="50%"
+            y1="46%"
+            x2="76%"
+            y2="65%"
+            stroke="color-mix(in oklab, var(--iris) 18%, transparent)"
+            strokeWidth="1.5"
+            strokeDasharray="4 6"
+          />
+        </svg>
+
         {frontendProjects.map((project, i) => (
           <Bubble
             key={project.id}
@@ -108,20 +169,19 @@ export function FrontendSection() {
           />
         ))}
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {active && (
             <motion.div
               key={active.id}
-              layoutId={`bubble-${active.id}`}
-              className="absolute left-1/2 top-1/2 z-30 w-[min(94%,52rem)] max-h-[85vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[2.5rem] border border-border p-7 sm:p-9 shadow-2xl backdrop-blur-xl"
+              className="absolute left-1/2 top-1/2 z-30 w-[min(94%,52rem)] max-h-[85vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[2.5rem] border border-border p-7 sm:p-9 shadow-2xl bg-card/95"
               style={{
-                background: `linear-gradient(150deg, color-mix(in oklab, ${active.tint} 65%, var(--background)), var(--background))`,
+                background: `linear-gradient(150deg, color-mix(in oklab, ${active.tint} 45%, var(--card)), var(--card))`,
                 boxShadow: 'var(--shadow-soft)',
               }}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
-              transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <button
                 type="button"
@@ -189,6 +249,9 @@ export function FrontendSection() {
                       <img
                         src={active.images[activeImageIndex].startsWith("http") ? active.images[activeImageIndex] : `${import.meta.env.BASE_URL}${active.images[activeImageIndex].replace(/^\.?\//, "")}`}
                         alt={`${active.name} preview`}
+                        decoding="async"
+                        // @ts-expect-error React 19 / modern HTML standard fetchpriority attribute
+                        fetchpriority="high"
                         className="w-full h-full object-cover object-top"
                       />
                       {active.images.length > 1 && (
@@ -199,7 +262,7 @@ export function FrontendSection() {
                                 prev === 0 ? active.images.length - 1 : prev - 1
                               )
                             }
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center shadow backdrop-blur transition-all"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow transition-all cursor-pointer"
                           >
                             <ChevronLeft className="w-5 h-5" />
                           </button>
@@ -209,7 +272,7 @@ export function FrontendSection() {
                                 prev === active.images.length - 1 ? 0 : prev + 1
                               )
                             }
-                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center shadow backdrop-blur transition-all"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow transition-all cursor-pointer"
                           >
                             <ChevronRight className="w-5 h-5" />
                           </button>
